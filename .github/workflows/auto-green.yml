@@ -1,0 +1,62 @@
+name: Auto Green Profile
+
+on:
+  push:
+    branches:
+      - master
+      - main
+  schedule:
+    # Jalan setiap 4 jam (jam 00, 04, 08, dst)
+    - cron: "0 */4 * * *"
+  
+  # Tombol manual buat ngetes (biar ga nunggu 4 jam)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  auto_commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          # GANTI EMAIL DAN NAMA DI SINI (JIKA MALAS PAKAI SECRETS)
+          # Atau biarkan begini jika mau pakai Secrets
+          git config --local user.email "${{ secrets.USER_EMAIL }}"
+          git config --local user.name "${{ secrets.USER_NAME }}"
+
+      - name: Random Commit Loop
+        run: |
+          arr[0]="chore(bot): 😂 auto commit"
+          arr[1]="chore(bot): 😱 auto commit"
+          arr[2]="chore(bot): 👿 auto commit"
+          arr[3]="chore(bot): 💩 auto commit"
+          arr[4]="chore(bot): 🙏 auto commit"
+          arr[5]="chore(bot): 🙈 auto commit"
+          arr[6]="chore(bot): 🐐 auto commit"
+          arr[7]="chore(bot): 🤖 auto commit"
+          arr[8]="chore(bot): 🟩 auto commit"
+          
+          # Random jumlah commit (1 sampai 6)
+          commit_count=$((RANDOM % 6 + 1))
+          
+          for ((i=1; i<=commit_count; i++)); do
+            d=`date '+%Y-%m-%dT%H:%M:%S'`
+            echo "Last Update: $d - Iteration: $i" > LAST_UPDATED
+            git add LAST_UPDATED
+            rand=$[$RANDOM % ${#arr[@]}]
+            git commit -m "${arr[$rand]}"
+          done
+
+      - name: GitHub Push
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          directory: "."
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
