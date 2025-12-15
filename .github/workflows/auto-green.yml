@@ -28,8 +28,8 @@ jobs:
         run: |
           # GANTI EMAIL DAN NAMA DI SINI (JIKA MALAS PAKAI SECRETS)
           # Atau biarkan begini jika mau pakai Secrets
-          git config --local user.email "${{ secrets.USER_EMAIL }}"
-          git config --local user.name "${{ secrets.USER_NAME }}"
+          git config --local user.email "ww@nekochan.eu.org"
+          git config --local user.name "yukinoshitawebid"
 
       - name: Random Commit Loop
         run: |
